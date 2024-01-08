@@ -17,3 +17,6 @@ func main() {
 }
 
 // hello comment!
+
+// still deciding what database I hsould use.
+// I want an SQL application but can't figure out how to host it if ever.
