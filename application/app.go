@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+
+	"github.com/Ethea2/popio-server/database"
 )
 
 type App struct {
@@ -24,9 +26,13 @@ func (a *App) Start(ctx context.Context) error {
 		Handler: a.router,
 	}
 
-	fmt.Println("Server running on localhost:4000")
+	err := db.ConnectDatabase()
+	if err != nil {
+		fmt.Errorf("something went wrong with app: %w", err)
+	}
 
-	err := server.ListenAndServe()
+	fmt.Println("Server running on localhost:4000")
+	err = server.ListenAndServe()
 	if err != nil {
 		fmt.Errorf("something went wrong with app: %w", err)
 	}
