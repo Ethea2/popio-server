@@ -3,9 +3,17 @@ package handler
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
-type Group struct{}
+type Group struct {
+	gorm.Model
+	ID    uuid.UUID `json:"group_id"`
+	Admin User      `json:"admin"`
+	Name  string    `json:"group_name"`
+}
 
 func (g *Group) GetGroupsForUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Get Groups for user")
