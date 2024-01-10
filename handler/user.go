@@ -12,7 +12,6 @@ import (
 )
 
 type User struct {
-	gorm.Model
 	ID       uuid.UUID `gorm:"primary_key" json:"id"`
 	Username string    `                   json:"username"`
 	Password string    `                   json:"password"`
@@ -39,7 +38,7 @@ func (u *User) Logout(w http.ResponseWriter, r *http.Request) {
 
 func (u *User) GetUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	db.Database.First(&u)
-
+	db.Database.First(&u, "id = ?", "03098d03-a233-4811-b4c2-6edb3fb42075")
+	fmt.Print(u)
 	json.NewEncoder(w).Encode(u)
 }
