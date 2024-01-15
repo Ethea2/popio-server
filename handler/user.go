@@ -21,7 +21,7 @@ import (
 type User struct {
 	ID       uuid.UUID `gorm:"primary_key" json:"id"`
 	Username string    `                   json:"username"`
-	Password string    `                   json:"password"`
+	Password string    `                   json:"password,omitempty"`
 }
 
 type UserGroup struct {
@@ -142,5 +142,8 @@ func (u *User) GetUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	userId := chi.URLParam(r, "id")
 	db.Database.First(&u, "id = ?", userId)
-	json.NewEncoder(w).Encode(u)
+	json.NewEncoder(w).Encode(User{
+		ID:       u.ID,
+		Username: u.Username,
+	})
 }
