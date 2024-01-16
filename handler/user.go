@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/go-chi/jwtauth/v5"
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
@@ -104,22 +104,25 @@ func (u *User) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := jwt.New(jwt.SigningMethodHS256)
+	// token := jwt.New(jwt.SigningMethodHS256)
+	//
+	// claims := token.Claims.(jwt.MapClaims)
+	// claims["username"] = u.Username
+	// claims["id"] = u.ID
+	// claims["admin"] = true
+	// claims["expiration"] = time.Now().Add(time.Hour * 72).Unix()
+	//
+	// finalToken, err := token.SignedString([]byte(os.Getenv("SECRET")))
+	// if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userinput.Password)); err != nil {
+	// 	json.NewEncoder(w).Encode(models.Response{
+	// 		StatusCode: 400,
+	// 		Message:    "Login failed",
+	// 	})
+	// 	return
+	// }
 
-	claims := token.Claims.(jwt.MapClaims)
-	claims["username"] = u.Username
-	claims["id"] = u.ID
-	claims["admin"] = true
-	claims["expiration"] = time.Now().Add(time.Hour * 72).Unix()
-
-	finalToken, err := token.SignedString([]byte(os.Getenv("SECRET")))
-	if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userinput.Password)); err != nil {
-		json.NewEncoder(w).Encode(models.Response{
-			StatusCode: 400,
-			Message:    "Login failed",
-		})
-		return
-	}
+	tokenAuth := jwtauth.New("HS256", []byte(os.Getenv("SECRET")), nil)
+	_, finalToken, _ := tokenAuth.Encode(map[string]interface{})
 	payload := Payload{
 		Username: u.Username,
 		UserID:   u.ID,

@@ -36,13 +36,13 @@ func (b *Bills) AddBillForGroup(w http.ResponseWriter, r *http.Request) {
 func (b *Bills) AddBillForUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	type BillInput struct {
-		Name            string
-		Mode            string
-		PeriodicPayment time.Time
-		UserID          uuid.UUID
+		Name            string    `json:"name"`
+		Mode            string    `json:"mode_of_payment"`
+		PeriodicPayment string    `json:"periodic_payment_date"`
+		UserID          uuid.UUID `json:"user_id,omitempty"`
 	}
-	// var billInput BillInput
-	err := json.NewDecoder(r.Body).Decode(&b)
+	var billInput BillInput
+	err := json.NewDecoder(r.Body).Decode(&billInput)
 	if err != nil {
 		json.NewEncoder(w).Encode(models.Response{
 			StatusCode: 400,
@@ -50,7 +50,8 @@ func (b *Bills) AddBillForUser(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	json.NewEncoder(w).Encode(b)
+
+	json.NewEncoder(w).Encode(billInput)
 	// todo: find a way to parse dates
 }
 
