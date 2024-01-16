@@ -122,7 +122,11 @@ func (u *User) Login(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	tokenAuth := jwtauth.New("HS256", []byte(os.Getenv("SECRET")), nil)
-	_, finalToken, _ := tokenAuth.Encode(map[string]interface{})
+	_, finalToken, _ := tokenAuth.Encode(map[string]interface{}{
+		"userID":     u.ID,
+		"username":   u.Username,
+		"expiration": time.Now().Add(time.Hour * 72).Unix(),
+	})
 	payload := Payload{
 		Username: u.Username,
 		UserID:   u.ID,
